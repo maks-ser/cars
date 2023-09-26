@@ -1,0 +1,15 @@
+/*   
+Theme Name: horenko-production.com
+Theme URI: horenko-production.com
+Version: 1.0
+Description: 
+Author: horenko-production.com
+Author URI: horenko-production.com
+*/
+/*m_admin*/
+.choose-content {
+    max-width: 100%;
+}
+.choose-content .choose-item {
+    flex: 0 0 calc(20% - 40px);
+}
