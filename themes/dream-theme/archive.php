@@ -9,9 +9,24 @@ $args = array(
 $categories = get_categories($args);
 $category = get_queried_object();
 $currency = getCurrency();
-
+//id машин которые не нужны на сайте (проданные и с момента продажи прошло более 7 дней)
+$sold_posts_ids_1week = get_posts(array(
+    'post_type' => 'post',
+    'meta_query' => [ [
+        'key' => '_sold_status',
+        'value' => '1',
+    ] ],
+    'date_query' => [
+        [
+            'column' => 'post_modified_gmt',
+            'before'  => '1 week ago',
+        ],
+    ],
+    'fields' => 'ids',
+    'numberposts' => -1,
+));
 $filters = [];
-$query = [];
+$query = []; // правильно назвать meta_query т.к. собирает именно его
 
 $post_price = '';
 $post_status = false;
@@ -30,19 +45,23 @@ if($user_role === 'customer') {
 $enabled_filters = [
     'product_type',
     'discount',
-    'sold_status',
     'brand',
     'model',
-    // 'availability',
+    'b_year',
+    'c_power',
+    'p_reserve',
     'state',
-    'damage',
+    'b_color',
     'body_type',
-    'fuel',
     'drive',
     'sheathing',
     'roof',
     'class',
     'price',
+    'sold_status',
+    // 'availability',
+    //    'damage',
+    //    'fuel',
 ];
 
 if (isset($_GET)) {
@@ -51,7 +70,7 @@ if (isset($_GET)) {
     foreach ($enabled_filters as $item) {
         if (isset($_GET[$item]) && $item != 'sold_status') {
             if ($query_flag == true) {
-                $query = [
+                $query[] = [
                     'relation' => 'AND',
                 ];
                 $query_flag = false;
@@ -88,15 +107,34 @@ if (isset($_GET)) {
             'type' => 'numeric'
         ];
     }
-
-
 }
 
 $posts = get_posts(array(
     'category' => $category->term_id,
     'meta_query' => $query,
     'numberposts' => -1,
+    'post__not_in' => $sold_posts_ids_1week,
 ));
+//foreach($posts as $post) {
+//
+//    if($year= (int) carbon_get_post_meta($post->ID,'sing_product_power_reserve')) {
+//
+//        if( $year < 490) {
+//            carbon_set_post_meta($post->ID, 'p_reserve', 1 );
+//        }elseif ($year > 489 && 599 > $year) {
+//            carbon_set_post_meta($post->ID, 'p_reserve', 2 );
+//        }elseif (599 < $year ) {
+//            carbon_set_post_meta($post->ID, 'p_reserve', 3 );
+//        }
+//        $c_year =  carbon_get_post_meta($post->ID,'p_reserve');
+//        echo '<pre>';
+//        var_dump($year);
+//        var_dump($c_year);
+//        echo '</pre>';
+//    }
+//}
+
+
 
 foreach ($posts as $post) {
     foreach ($enabled_filters as $item) {
@@ -149,16 +187,19 @@ $translate = [
         'sold_status' => 'Сховати продані',
         'brand' => 'Марка',
         'model' => 'Модель',
+        'b_color' => 'Колір кузова',
         'availability' => 'Наявність',
         'state' => 'Стан',
         'damage' => 'Ушкодження',
         'body_type' => 'Тип кузова',
         'fuel' => 'Тип двигуна',
         'drive' => 'Тип привода',
-        'sheathing' => 'Обшивка',
+        'sheathing' => 'Матеріал салону',
         'roof' => 'Панорама',
         'class' => 'Клас машини',
-
+        'b_year' => 'Рік випуску',
+        'p_reserve' => 'Запас ходу, км',
+        'c_power' => 'Потужність, к.с',
     ],
     'ru' => [
         'product_type' => 'Тип товара',
@@ -166,36 +207,33 @@ $translate = [
         'sold_status' => 'Спрятать проданные',
         'brand' => 'Марка',
         'model' => 'Модель',
+        'b_color' => 'Цвет кузова',
         'availability' => 'Наличие',
         'state' => 'Состояние',
         'damage' => 'Повреждения',
         'body_type' => 'Тип кузова',
         'fuel' => 'Тип двигателя',
         'drive' => 'Тип привода',
-        'sheathing' => 'Обшивка',
+        'sheathing' => 'Материал салона',
         'roof' => 'Панорама',
         'class' => 'Класс машины',
+        'b_year' => 'Год выпуска',
+        'p_reserve' => 'Запас хода, км',
+        'c_power' => 'Мощность, л.с',
     ]
 ];
 ?>
-    <!--    <div class="col-lg-3 col-md-5 col-xs-12 aside-wr" id="aside_l">-->
-    <!---->
-    <!--    </div>-->
-
     <main class="main-catalog">
     <section class="section-catalog">
         <div class="container">
             <div class="breadcrumbs-container">
                 <div class="breadcrumbs">
-
                     <?php
-
                     $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
                     $limit = 25;
                     $offset = ($paged - 1) * $limit;
                     ?>
-                    <?php
-                    breadcrumbs(); ?>
+                    <?php  breadcrumbs(); ?>
                 </div>
                 <div class="page-title-adaptive">
 
@@ -636,8 +674,6 @@ $translate = [
             $max = max($prices);
         }
     }
-
-
     ?>
     <script>
         window.addEventListener('DOMContentLoaded', (event) => {

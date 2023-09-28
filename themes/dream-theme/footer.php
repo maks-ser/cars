@@ -126,27 +126,6 @@
 </section>
 </main>
 
-
-<!--<div class="order-modal-form modal fade" id="order-modal" tabindex="-1" aria-labelledby="exampleModalLabel"-->
-<!--     aria-hidden="true">-->
-<!--    <div class="modal-dialog">-->
-<!--        <div class="modal-content">-->
-<!--            <button type="button" class="modal__close-button close" data-dismiss="modal" aria-label="Close">-->
-<!--            </button>-->
-<!--            <div class="consultation-form-modal modal-form">-->
-<!--                <div class="form__title">-->
-<!--                    --><?php //echo pll__("Під замовлення"); ?>
-<!--                </div>-->
-<!--                --><?php //echo do_shortcode(pll__('[contact-form-7 id="1746" title="On order"]')); ?>
-<!--                <p class="form__privacy-policy">-->
-<!--                    --><?php //echo pll__('Натискаючи на кнопку, я погоджуюсь на <span>обробку персональних даних</span>'); ?>
-<!--                </p>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
-
 <div class="main-modal-form modal fade" id="consultation-modal" tabindex="-1" aria-labelledby="exampleModalLabel"
      aria-hidden="true">
     <div class="modal-dialog">
@@ -184,25 +163,6 @@
         </div>
     </div>
 </div>
-
-<!--<div class="drive-modal-form modal fade" id="drive-modal" tabindex="-1" aria-labelledby="exampleModalLabel"-->
-<!--     aria-hidden="true">-->
-<!--    <div class="modal-dialog">-->
-<!--        <div class="modal-content">-->
-<!--            <button type="button" class="modal__close-button close close-modal-window" data-dismiss="modal" aria-label="Close">-->
-<!--            </button>-->
-<!--            <div class="consultation-form-modal modal-form">-->
-<!--                <div class="form__title">-->
-<!--                    --><?php //echo pll__("Запис на тест-драйв"); ?>
-<!--                </div>-->
-<!--                --><?php //echo do_shortcode(pll__('[contact-form-7 id="1749" title="Test drive popup"]')); ?>
-<!--                <p class="form__privacy-policy">-->
-<!--                    --><?php //echo pll__('Натискаючи на кнопку, я погоджуюсь на <span>обробку персональних даних</span>'); ?>
-<!--                </p>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 
 <?php if(!is_user_logged_in()): ?>
 <div class="main-modal-form modal fade" id="auth-modal" tabindex="-1" aria-labelledby="exampleModalLabel"

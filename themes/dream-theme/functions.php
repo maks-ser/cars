@@ -501,6 +501,16 @@ function crb_attach_theme_options()
         }
         return $result;
     }
+    function getCarColor()
+    {
+        $fuel = carbon_get_theme_option('b_color');
+        $result = [];
+
+        foreach ($fuel as $key => $value) {
+            $result[$value['alias']] = $value['text'];
+        }
+        return $result;
+    }
 
     function getSheathing()
     {
@@ -534,19 +544,36 @@ function crb_attach_theme_options()
         }
         return $result;
     }
+    function getCarYear()
+    {
+        $charge = carbon_get_theme_option('b_year');
+        $result = [];
 
-//    function getWeight()
-//    {
-//        $item = carbon_get_theme_option('weight');
-//        $result = [];
-//
-//        foreach ($item as $key => $value) {
-//            $result[$value['alias']] = $value['text'];
-//        }
-//        return $result;
-//    }
+        foreach ($charge as $key => $value) {
+            $result[$value['alias']] = $value['text'];
+        }
+        return $result;
+    }
+    function getReverve()
+    {
+        $charge = carbon_get_theme_option('p_reserve');
+        $result = [];
 
+        foreach ($charge as $key => $value) {
+            $result[$value['alias']] = $value['text'];
+        }
+        return $result;
+    }
+    function getCarPower()
+    {
+        $charge = carbon_get_theme_option('c_power');
+        $result = [];
 
+        foreach ($charge as $key => $value) {
+            $result[$value['alias']] = $value['text'];
+        }
+        return $result;
+    }
 
     // Комплектація -------------------------------
 
@@ -762,20 +789,6 @@ function crb_attach_theme_options()
         }
         return $result;
     }
-
-
-
-//    function getClass()
-//    {
-//        $fuel = carbon_get_theme_option('class');
-//        $result = [];
-//
-//        foreach ($fuel as $key => $value) {
-//            $result[$value['alias']] = $value['text'];
-//        }
-//        return $result;
-//    }
-
     function getFuel()
     {
         $fuel = carbon_get_theme_option('fuel');
@@ -830,7 +843,7 @@ function crb_attach_theme_options()
         return $result;
 
     }
-
+//Главное меню настроек
     Container::make('theme_options', 2, __(' Главная информация', 'crb'))
         ->add_tab('Контакты', array(
 
@@ -987,6 +1000,16 @@ function crb_attach_theme_options()
                     )
                 ),
         ))
+        ->add_tab('Цвет кузова', array(
+            Field::make('complex', 'b_color', 'Цвет кузова')
+                ->add_fields(array(
+                        Field::make('text', 'alias', 'Внутренний код')
+                            ->set_width(25),
+                        Field::make('text', 'text', 'Заголовок')
+                            ->set_width(75),
+                    )
+                ),
+        ))
         ->add_tab('Обшивка салона', array(
             Field::make('complex', 'sheathing', 'Обшивка')
                 ->add_fields(array(
@@ -1018,7 +1041,37 @@ function crb_attach_theme_options()
                 ),
         ))
         ->add_tab('Зарядний пристрій', array(
-            Field::make('complex', 'charge', 'зарядний пристрій')
+            Field::make('complex', 'charge', 'Зарядний пристрій')
+                ->add_fields(array(
+                        Field::make('text', 'alias', 'Внутренний код')
+                            ->set_width(25),
+                        Field::make('text', 'text', 'Заголовок')
+                            ->set_width(25),
+                    )
+                ),
+        ))
+        ->add_tab('Рік випуску', array(
+            Field::make('complex', 'b_year', 'Рік випуску')
+                ->add_fields(array(
+                        Field::make('text', 'alias', 'Внутренний код')
+                            ->set_width(25),
+                        Field::make('text', 'text', 'Заголовок')
+                            ->set_width(25),
+                    )
+                ),
+        ))
+        ->add_tab('Запас ходу', array(
+            Field::make('complex', 'p_reserve', 'Запас ходу, км.')
+                ->add_fields(array(
+                        Field::make('text', 'alias', 'Внутренний код')
+                            ->set_width(25),
+                        Field::make('text', 'text', 'Заголовок')
+                            ->set_width(25),
+                    )
+                ),
+        ))
+        ->add_tab('Потужність, к.с.', array(
+            Field::make('complex', 'c_power', 'Потужність, к.с.')
                 ->add_fields(array(
                         Field::make('text', 'alias', 'Внутренний код')
                             ->set_width(25),
@@ -1037,10 +1090,6 @@ function crb_attach_theme_options()
                     )
                 ),
         ));
-//        ->add_tab('Вага, кг', array(
-//            Field::make('text', 'weight', 'Вага, кг')
-//                ->set_width(25),
-//        ));
 
     Container::make('theme_options', 4, __('Комплектація', 'crb'))
         ->add_tab('Технічній стан авто', array(
@@ -1073,7 +1122,6 @@ function crb_attach_theme_options()
                     )
                 ))
         )
-
         ->add_tab('Коробка передач', array(
                 Field::make('complex', 'gearbox', "Коробка передач")
                     ->add_fields(array(
@@ -1253,11 +1301,10 @@ function crb_attach_theme_options()
                                 ->set_width(25),
                         )
                     ))
-        )
-        ;
+        );
+//END главное меню
 
-
-
+//Данные машины
     Container::make('post_meta', 'Данные о машине')
         ->where('post_type', '=', 'post')
         ->add_tab('Товар', array(
@@ -1409,7 +1456,6 @@ function crb_attach_theme_options()
                         'compare' => '=',
                     )
                 )),
-//            Field::make('text', 'sing_product_dispersal', __('Разгон до 100 км, сек:', 'crb'))->set_width(33),
             Field::make('text', 'sing_product_max_speed', __('Максимальная скорость, км/ч:', 'crb'))->set_width(33)
             ->set_conditional_logic(array(
                     array(
@@ -1426,8 +1472,7 @@ function crb_attach_theme_options()
                         'compare' => '=',
                     )
                 )),
-//            Field::make('text', 'sing_product_autopilot', __('Автопилот:', 'crb'))->set_width(33),
-//                Field::make('text', 'sing_product_driven', __('Пригнан из:', 'crb'))->set_width(33),
+
             Field::make('text', 'sing_product_vin', __('VIN:', 'crb'))->set_width(33),
         ))
         ->add_tab('Данные для фильтра', array(
@@ -1503,6 +1548,15 @@ function crb_attach_theme_options()
                         'compare' => '=',
                     )
                 )),
+            Field::make('select', 'b_color', __('Цвет кузова'))
+                ->set_options(getCarColor())->set_width(25)
+                ->set_conditional_logic(array(
+                    array(
+                        'field' => 'product_type',
+                        'value' => '1',
+                        'compare' => '=',
+                    )
+                )),
             Field::make('select', 'sheathing', __('Обшивка'))
                 ->set_options(getSheathing())->set_width(25)
                 ->set_conditional_logic(array(
@@ -1523,6 +1577,33 @@ function crb_attach_theme_options()
                 )),
             Field::make('select', 'charge', __('Зарядний пристрій'))
                 ->set_options(getCharge())->set_width(25)
+                ->set_conditional_logic(array(
+                    array(
+                        'field' => 'product_type',
+                        'value' => '1',
+                        'compare' => '=',
+                    )
+                )),
+            Field::make('select', 'b_year', __('Рік випуску'))
+                ->set_options(getCarYear())->set_width(25)
+                ->set_conditional_logic(array(
+                    array(
+                        'field' => 'product_type',
+                        'value' => '1',
+                        'compare' => '=',
+                    )
+                )),
+            Field::make('select', 'p_reserve', __('Запас ходу, км.'))
+                ->set_options(getReverve())->set_width(25)
+                ->set_conditional_logic(array(
+                    array(
+                        'field' => 'product_type',
+                        'value' => '1',
+                        'compare' => '=',
+                    )
+                )),
+            Field::make('select', 'c_power', __('Потужність, к.с.'))
+                ->set_options(getCarPower())->set_width(25)
                 ->set_conditional_logic(array(
                     array(
                         'field' => 'product_type',
@@ -1746,7 +1827,9 @@ function crb_attach_theme_options()
                     )
                 )),
         ));
+//END данные машины
 
+//Настройки для страниц
     Container::make('post_meta', 'Главная страница')
         ->where('post_template', '=', 'template-home.php')
         ->add_tab('Первый экран', array(
@@ -1820,6 +1903,9 @@ function crb_attach_theme_options()
             Field::make('rich_text', 'contact_more_ru', __('Юр данные на RU ', 'crb'))->set_width(33),
             Field::make('rich_text', 'contact_more_en', __('Юр данные на EN ', 'crb'))->set_width(33),
         ));
+    //END настройки для страниц
+
+//Настройки для таксономий (Категории)
     Container::make('term_meta', 'Категория')
         ->where('term_taxonomy', '=', 'category')
         ->add_fields(array(
@@ -1886,7 +1972,6 @@ register_nav_menus(array(
 ));
 
 add_theme_support('post-thumbnails');
-
 
 register_nav_menus(array(
     'top' => 'Главное меню',

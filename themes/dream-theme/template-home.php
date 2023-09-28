@@ -2,6 +2,22 @@
 /**
  * Template Name: Главная
  */
+$sold_posts_ids_1week = get_posts(array(
+//    'category' => $category->term_id,
+    'post_type' => 'post',
+    'meta_query' => [ [
+        'key' => '_sold_status',
+        'value' => '1',
+    ] ],
+    'date_query' => [
+        [
+            'column' => 'post_modified_gmt',
+            'before'  => '1 week ago',
+        ],
+    ],
+    'fields' => 'ids',
+    'numberposts' => -1,
+));
 get_header();
 ?>
 
@@ -61,6 +77,7 @@ get_header();
                             'compare' => 'EXISTS',
                         ),
                     ),
+                    'post__not_in' => $sold_posts_ids_1week,
                     'fields' => 'ids',
                 ));
 
@@ -101,6 +118,7 @@ get_header();
                         'compare' => '=',
                     ),
                 ),
+                'post__not_in' => $sold_posts_ids_1week,
             ));
             if ($posts) : ?>
             <h4 class="catalog-title discount-title">
