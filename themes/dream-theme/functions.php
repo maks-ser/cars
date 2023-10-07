@@ -1000,8 +1000,8 @@ function crb_attach_theme_options()
                     )
                 ),
         ))
-        ->add_tab('Цвет кузова', array(
-            Field::make('complex', 'b_color', 'Цвет кузова')
+        ->add_tab('Колір кузова', array(
+            Field::make('complex', 'b_color', 'Колір кузова')
                 ->add_fields(array(
                         Field::make('text', 'alias', 'Внутренний код')
                             ->set_width(25),
@@ -1359,14 +1359,7 @@ function crb_attach_theme_options()
                         'value' => 1,
                     ),
                 ) ),
-//            Field::make( 'checkbox', 'discount', 'Акція' )->set_width(10),
-//            Field::make( 'text', 'discount_value', 'Акційна ціна' )->set_width(45)
-//                ->set_conditional_logic( array(
-//                    array(
-//                        'field' => 'discount',
-//                        'value' => true,
-//                    ),
-//                ) ),
+
             Field::make( 'date', 'sing_product_arriving_date', 'Очікується: ' )
                 ->set_attribute( 'placeholder', __('Дата прибуття автомобіля') )
                 ->set_storage_format( 'd.m.y' )
@@ -1548,7 +1541,7 @@ function crb_attach_theme_options()
                         'compare' => '=',
                     )
                 )),
-            Field::make('select', 'b_color', __('Цвет кузова'))
+            Field::make('select', 'b_color', __('Колір кузова'))
                 ->set_options(getCarColor())->set_width(25)
                 ->set_conditional_logic(array(
                     array(
@@ -1833,7 +1826,18 @@ function crb_attach_theme_options()
     Container::make('post_meta', 'Главная страница')
         ->where('post_template', '=', 'template-home.php')
         ->add_tab('Первый экран', array(
-            Field::make('image', 'main_bg_img', 'Картинка на задний фон')->set_value_type('url'),
+            Field::make('complex', 'c_slider', 'Slider')
+            ->add_fields(array(
+                Field::make('textarea', 'slide_title', __('Заголовок слайда', 'crb'))->set_width(33),
+                Field::make('checkbox', 'show_slide', __('Показать слайд?', 'crb'))
+                    ->set_default_value('yes')
+                    ->set_width(16),
+                Field::make('text', 'num_slide', 'Порядковый номер')->set_width(33),
+                Field::make('text', 'link_slide', 'Ссылка')->set_width(33),
+                Field::make('image', 'slider_img', 'Картинка слайдера')->set_value_type('url'),
+                Field::make('image', 'slider_img_m', 'Картинка слайдера мобильный')->set_value_type('url'),
+            )),
+//            Field::make('image', 'main_bg_img', 'Картинка на задний фон')->set_value_type('url'),
             Field::make('textarea', 'main_title', __('Заголовок', 'crb'))->set_width(33),
             Field::make('textarea', 'main_title_mobile', __('Заголовок на телефоне', 'crb'))->set_width(33),
             Field::make('text', 'main_button', __('Текст кнопки', 'crb'))->set_width(33),
@@ -2318,5 +2322,49 @@ if ( is_user_logged_in() ) {
     $current_user = wp_get_current_user();
     if($current_user->user_login === 'm_admin') {
         show_admin_bar( false );
+    }
+}
+
+add_action('pre_get_posts', 'my_alter_category_wp_query');
+function my_alter_category_wp_query(WP_Query $query) {
+    if (!is_category() || !is_home()) return;
+//    $sold_posts_ids_1week = get_posts(array(
+//        'post_type' => 'post',
+//        'meta_query' => [ [
+//            'key' => '_sold_status',
+//            'value' => '1',
+//        ] ],
+//        'date_query' => [
+//            [
+//                'column' => 'post_modified_gmt',
+//                'before'  => '1 week ago',
+//            ],
+//        ],
+//        'fields' => 'ids',
+//        'numberposts' => -1,
+//    ));
+//    $query->set('post__not_in', $sold_posts_ids_1week);
+    if(is_category(81)) {
+        global $wp_query;
+        $args = array_merge( $wp_query->query_vars, array(
+                'meta_query' => [
+                    'relation' => 'AND',
+                    'arriving_date' => array(
+                        'key'     => 'sing_product_arriving_date',
+                    ),
+                ],
+            'orderby' => 'arriving_date',
+        ) );
+        query_posts( $args );
+
+//        $query->set( 'meta_query', [
+//            [
+//                'arriving_date' => array(
+//                    'key'     => 'sing_product_arriving_date',
+//                ),
+//            ]
+//        ] );
+//        $query->set('orderby', 'arriving_date');
+//        $query->set('order', 'DESC');
     }
 }

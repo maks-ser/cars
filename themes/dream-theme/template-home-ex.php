@@ -18,7 +18,6 @@ $sold_1week_posts_ids = get_posts(array(
     'fields' => 'ids',
     'numberposts' => -1,
 ));
-$home_url = get_home_url();
 get_header();
 ?>
 
@@ -47,7 +46,7 @@ if (!empty($slider_items_show) && 0 < count($slider_items_show) ) { ?>
             <div class="banner__slider swiper-container">
                 <div class="banner__slider__wrapper swiper-wrapper">
                     <?php foreach ($slider_items_show as $item) { ?>
-                            <?php
+                        <?php
                         $sl_img = $item['slider_img']; ;
                         if(wp_is_mobile() && isset($item['slider_img_m']) && !empty($item['slider_img_m'])) {
                             $sl_img = $item['slider_img_m']; ;
@@ -60,9 +59,9 @@ if (!empty($slider_items_show) && 0 < count($slider_items_show) ) { ?>
                                 </h2>
                             </div>
                             <?php if(isset($item['link_slide']) && !empty($item['link_slide'])) { ?>
-                            <div class="btn__wrap">
-                                <a href="<?php echo esc_url($item['link_slide']); ?>" class="more__btn"><?php echo pll__('Детальніше') ?></a>
-                            </div>
+                                <div class="btn__wrap">
+                                    <a href="<?php echo esc_url($item['link_slide']); ?>" class="more__btn"><?php echo pll__('Детальніше') ?></a>
+                                </div>
                             <?php  } ?>
                         </div>
                     <?php  } ?>
@@ -148,22 +147,81 @@ if (!empty($slider_items_show) && 0 < count($slider_items_show) ) { ?>
 
                                                 </div>
                                             <?php endif; ?>
-
+                                            <?php /* if (carbon_get_post_meta($value->ID, 'sing_product_availability')) { ?>
+                                            <div class="availability-text">
+                                                <?php echo pll__('В наявності'); ?>
+                                            </div>
+                                        <?php } else { ?>
+                                            <div class="availability-text no">
+                                                <?php echo pll__('Немає в наявності'); ?>
+                                            </div>
+                                        <?php } */ ?>
                                         </div>
                                     </div>
                                 </div>
-
+                                <!--                            <div class="center-part">-->
+                                <!--                                <div class="product-info-table">-->
+                                <!--                                    <div class="table-line">-->
+                                <!--                                        <div class="line__title">-->
+                                <!--                                            --><?php //echo pll__('Рік випуску:'); ?>
+                                <!--                                        </div>-->
+                                <!--                                        <div class="line__description">-->
+                                <!--                                            --><?php //echo carbon_get_post_meta($value->ID, 'sing_product_year'); ?>
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="table-line">-->
+                                <!--                                        <div class="line__title">-->
+                                <!--                                            --><?php //echo pll__('Стан:'); ?>
+                                <!--                                        </div>-->
+                                <!--                                        <div class="line__description">-->
+                                <!--                                            --><?php //echo carbon_get_post_meta($value->ID, 'sing_product_condition'); ?>
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="table-line">-->
+                                <!--                                        <div class="line__title">-->
+                                <!--                                            --><?php //echo pll__('Пробіг, км:'); ?>
+                                <!--                                        </div>-->
+                                <!--                                        <div class="line__description">-->
+                                <!--                                            --><?php //echo carbon_get_post_meta($value->ID, 'sing_product_mileage'); ?>
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="table-line">-->
+                                <!--                                        <div class="line__title">-->
+                                <!--                                            --><?php //echo pll__('Запас ходу, км:'); ?>
+                                <!--                                        </div>-->
+                                <!--                                        <div class="line__description">-->
+                                <!--                                            --><?php //echo carbon_get_post_meta($value->ID, 'sing_product_power_reserve'); ?>
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="table-line">-->
+                                <!--                                        <div class="line__title">-->
+                                <!--                                            --><?php //echo pll__('Тип приводу:'); ?>
+                                <!--                                        </div>-->
+                                <!--                                        <div class="line__description">-->
+                                <!--                                            --><?php //echo carbon_get_post_meta($value->ID, 'sing_product_type_of_drive'); ?>
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="table-line">-->
+                                <!--                                        <div class="line__title">-->
+                                <!--                                            --><?php //echo pll__('Потужність, к.с.:'); ?>
+                                <!--                                        </div>-->
+                                <!--                                        <div class="line__description">-->
+                                <!--                                            --><?php //echo carbon_get_post_meta($value->ID, 'sing_product_power'); ?>
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                                <!--                            </div>-->
                                 <?php $vin_code_array = get_the_tags($value->ID);
                                 $vin_code = $vin_code_array[0]->name; ?>
                                 <div class="bottom-part <?php echo carbon_get_post_meta($value->ID, 'booking_status') === 1 ? 'booked' : '' ?>
 <?php echo carbon_get_post_meta($value->ID, 'sold_status') === 1 ? 'sold' : '' ?>">
                                     <div class="main-button">
                                         <a <?php echo carbon_get_post_meta($value->ID,'booking_status') !== 1 ? 'data-toggle="modal" data-target="#buy-modal"' : ''; ?>
-                                                class="buy-modal-btn <?php echo carbon_get_post_meta($value->ID,'booking_status') === 1 ? 'booked' : ''; ?>
+                                            class="buy-modal-btn <?php echo carbon_get_post_meta($value->ID,'booking_status') === 1 ? 'booked' : ''; ?>
 <?php echo carbon_get_post_meta($value->ID, 'sold_status') === 1 ? 'sold' : '' ?>"
                                             <?php echo carbon_get_post_meta($value->ID,'booking_status') === 1 ? 'disabled' : ''; ?>
                                             <?php echo carbon_get_post_meta($value->ID,'booking_status') === 1 ? '' : 'href="#"'; ?>
-                                                data-title="<?php echo $value->post_title; ?>"
+                                            data-title="<?php echo $value->post_title; ?>"
                                             <?php if($vin_code) { ?>
                                                 data-vin="<?php echo $vin_code; ?>"
                                             <?php } ?>
@@ -207,13 +265,13 @@ if (!empty($slider_items_show) && 0 < count($slider_items_show) ) { ?>
                 <a href="<?php echo get_category_link($categories[1]->term_id); ?>" class="choose-item">
                     <span><?php echo pll__($categories[1]->name); ?></span>
                 </a>
-                <a href="<?php echo pll__($home_url.'/forma-pid-zamovlennya/'); ?>" class="choose-item">
+                <a href="<?php echo pll__(get_home_url().'/forma-pid-zamovlennya/'); ?>" class="choose-item">
                     <span><?php echo pll__("Під замовлення"); ?></span>
                 </a>
                 <a href="<?php echo get_category_link($categories[0]->term_id); ?>" class="choose-item">
                     <span><?php echo pll__($categories[0]->name); ?></span>
                 </a>
-                <a href="<?php echo pll__( $home_url.'/category/all/'); ?>" class="choose-item">
+                <a href="<?php echo pll__( get_home_url().'/category/all/'); ?>" class="choose-item">
                     <span><?php echo pll__('Каталог авто'); ?></span>
                 </a>
                 <?php
@@ -239,10 +297,10 @@ if (!empty($slider_items_show) && 0 < count($slider_items_show) ) { ?>
                 $brands = carbon_get_theme_option("brand");
                 foreach ($brands as $brand) :
                     if (in_array($brand['alias'], $brand_ids) && $brand['alias'] > 2) :?>
-                        <a href="<?php echo pll__($home_url.'/category/all/');?>?brand=<?php echo $brand['alias'] ?>" class="choose-item">
+                        <a href="<?php echo pll__(get_home_url().'/category/all/');?>?brand=<?php echo $brand['alias'] ?>" class="choose-item">
                             <img src="<?php echo $brand['brand_logo'] ?>" alt="">
                         </a>
-                <?php endif; endforeach; ?>
+                    <?php endif; endforeach; ?>
 
 
             </div>
@@ -250,6 +308,9 @@ if (!empty($slider_items_show) && 0 < count($slider_items_show) ) { ?>
         </div>
         <!-- /.container -->
     </section>
+
+
+
 
     <section id="about" class="section-about"
              style="background-image: url(<?php echo carbon_get_the_post_meta('about_bg_img'); ?>)">
@@ -259,15 +320,21 @@ if (!empty($slider_items_show) && 0 < count($slider_items_show) ) { ?>
                     <img src="<?php echo carbon_get_the_post_meta('about_img'); ?>" alt="About us image">
                 </div>
                 <div class="text-part">
-
+                    <!--                    <h2 class="title">-->
+                    <!--                        --><?php //echo carbon_get_the_post_meta('about_title'); ?>
+                    <!--                    </h2>-->
                     <div class="description">
                         <?php echo carbon_get_the_post_meta('about_desc'); ?>
                     </div>
-
+                    <!--                    <div class="main-button_icon arrows-up">-->
+                    <!--                        <a href="/about-us">-->
+                    <?php //echo carbon_get_the_post_meta('about_button'); ?><!--</a>-->
+                    <!--                    </div>-->
                 </div>
             </div>
         </div>
     </section>
 
 <?php
-get_footer();
+get_footer(); // подключаем подвал
+?>

@@ -10,7 +10,7 @@ $categories = get_categories($args);
 $category = get_queried_object();
 $currency = getCurrency();
 //id машин которые не нужны на сайте (проданные и с момента продажи прошло более 7 дней)
-$sold_1week_posts_ids = get_posts(array(
+$sold_posts_ids_1week = get_posts(array(
     'post_type' => 'post',
     'meta_query' => [ [
         'key' => '_sold_status',
@@ -25,9 +25,8 @@ $sold_1week_posts_ids = get_posts(array(
     'fields' => 'ids',
     'numberposts' => -1,
 ));
-
 $filters = [];
-$query = [['relation' => 'AND',]]; // правильно назвать meta_query т.к. собирает именно его
+$query = []; // правильно назвать meta_query т.к. собирает именно его
 
 $post_price = '';
 $post_status = false;
@@ -59,7 +58,7 @@ $enabled_filters = [
     'roof',
     'class',
     'price',
-//    'sold_status',
+    'sold_status',
     // 'availability',
     //    'damage',
     //    'fuel',
@@ -109,6 +108,9 @@ if (isset($_GET)) {
         ];
     }
     if (isset($_GET["sorting"]) && $_GET['sorting'] != '') {
+        $query[] = [
+            'relation' => 'AND',
+        ];
         if ($_GET["sorting"] === "DESC_name") {
             $sorting = $sorting = ['orderby' => 'name', 'order' => "DESC"];;
         }elseif($_GET["sorting"] === "ASC_name") {
@@ -116,7 +118,6 @@ if (isset($_GET)) {
         }elseif($_GET["sorting"] === "ASC_price") {
 
             $query[] = array(
-                'relation' => 'AND',
                 'funcar_price' => array(
                     'key'     => 'sing_product_price',
                 ),
@@ -128,7 +129,6 @@ if (isset($_GET)) {
         }elseif($_GET["sorting"] === "DESC_price") {
 
             $query[] = array(
-                'relation' => 'AND',
                 'funcar_price' => array(
                     'key'     => 'sing_product_price',
                 ),
@@ -141,12 +141,15 @@ if (isset($_GET)) {
     }
 }
 
+
+
 $args = array(
     'category' => $category->term_id,
     'meta_query' => $query,
     'numberposts' => -1,
-    'post__not_in' => $sold_1week_posts_ids,
+    'post__not_in' => $sold_posts_ids_1week,
 );
+
 
 if(isset($_GET["sorting"]) && $_GET['sorting'] != '') {
     global $wp_query;
@@ -170,6 +173,7 @@ $posts = get_posts($args);
 //        var_dump($c_year);
 //        echo '</pre>';
 //    }
+//$wp_query->query_vars
 //}
 
 
@@ -285,11 +289,13 @@ $translate = [
             <?php
 //            $search = get_search_query();
 //            $obj = get_queried_object();
-//echo '<pre>';
-//            var_dump(get_query_var('post__not_in'));
-//echo '</pre>';
-
-
+//            echo '<pre>';
+//            var_dump($wp_query->query_vars);
+//            var_dump($search);
+//            echo '</pre>';
+//            echo '<pre>';
+//            print_r($obj);
+//            echo '</pre>';
             ?>
             <div class="catalog-content">
                 <div class="sidebar">
@@ -320,7 +326,7 @@ $translate = [
                             <?php
                             foreach ($filters as $key => $filter):
                                 $i = 1; ?>
-<!--                   m_admin            <div class="w-block --><?php //echo $key === 'discount' ? 'active' : ''?><!--">-->
+                                <!--                   m_admin            <div class="w-block --><?php //echo $key === 'discount' ? 'active' : ''?><!--">-->
                                 <div class="w-block">
                                     <div class="title_custom">
                                         <span class="line">
@@ -338,12 +344,12 @@ $translate = [
                                             <div class="checkbox-elem-wrapper <?php echo (isset($_GET[$key]) && $_GET[$key] == $k) ? 'opens' : ''; ?>">
                                                 <div class="checkbox-elem">
                                                     <input
-                                                            id="<?php echo $key . $i; ?>"
-                                                            data-id="<?php echo $key; ?>"
-                                                            class="checkbox"
-                                                            type="checkbox"
-                                                            value="<?php echo $k; ?>"
-                                                            onchange="filter('<?php echo $key; ?>', '<?php echo $k; ?>')"
+                                                        id="<?php echo $key . $i; ?>"
+                                                        data-id="<?php echo $key; ?>"
+                                                        class="checkbox"
+                                                        type="checkbox"
+                                                        value="<?php echo $k; ?>"
+                                                        onchange="filter('<?php echo $key; ?>', '<?php echo $k; ?>')"
                                                         <?php echo (isset($_GET[$key]) && $_GET[$key] == $k) ? 'checked' : ''; ?>
                                                     >
                                                     <label for="<?php echo $key . $i; ?>"></label>
@@ -650,7 +656,7 @@ $translate = [
                                 </div>
                             </li>
                         <?php endforeach; ?>
-                        
+
                     </div>
                     <div class="pagination-nav">
                         <?php the_posts_pagination(); ?>
@@ -782,16 +788,18 @@ $translate = [
             select.addEventListener("change", function () {
                 form.method = 'GET'
                 let value = select.value
-                // let strGET = window.location.search.replace( '?', '');
+                let strGET = window.location.search.replace( '?', '');
+                console.log('window.location.href', window.location.href);
                 let newUrl = new URL(window.location.href)
                 if(newUrl.searchParams.has('sorting')) {
                     newUrl.searchParams.set('sorting', value)
                 }else {
                     newUrl.searchParams.append('sorting', value)
                 }
-                window.location.href = newUrl;
-                // form.action = newUrl
-                // form.submit();
+
+                form.action = newUrl
+                console.log('form.action', form.action);
+                form.submit();
             })
             /*$('#reset').on('click', function () {
                 $('#simple-filter').find('input').each(function () {

@@ -48,7 +48,7 @@ if($user_role && $user_role == 'agent'){
                         <?php the_title(); ?>
                     </div>
                 </div>
-                <?php var_dump($post); ?>
+<!--                --><?php //var_dump($post); ?>
                 <div class="product-content">
                     <?php $vin_code = carbon_get_the_post_meta("sing_product_vin"); ?>
                     <div class="card-column">

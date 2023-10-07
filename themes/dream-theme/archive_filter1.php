@@ -10,7 +10,7 @@ $categories = get_categories($args);
 $category = get_queried_object();
 $currency = getCurrency();
 //id машин которые не нужны на сайте (проданные и с момента продажи прошло более 7 дней)
-$sold_1week_posts_ids = get_posts(array(
+$sold_posts_ids_1week = get_posts(array(
     'post_type' => 'post',
     'meta_query' => [ [
         'key' => '_sold_status',
@@ -25,9 +25,8 @@ $sold_1week_posts_ids = get_posts(array(
     'fields' => 'ids',
     'numberposts' => -1,
 ));
-
 $filters = [];
-$query = [['relation' => 'AND',]]; // правильно назвать meta_query т.к. собирает именно его
+$query = []; // правильно назвать meta_query т.к. собирает именно его
 
 $post_price = '';
 $post_status = false;
@@ -59,7 +58,7 @@ $enabled_filters = [
     'roof',
     'class',
     'price',
-//    'sold_status',
+    'sold_status',
     // 'availability',
     //    'damage',
     //    'fuel',
@@ -108,6 +107,7 @@ if (isset($_GET)) {
             'type' => 'numeric'
         ];
     }
+
     if (isset($_GET["sorting"]) && $_GET['sorting'] != '') {
         if ($_GET["sorting"] === "DESC_name") {
             $sorting = $sorting = ['orderby' => 'name', 'order' => "DESC"];;
@@ -116,7 +116,6 @@ if (isset($_GET)) {
         }elseif($_GET["sorting"] === "ASC_price") {
 
             $query[] = array(
-                'relation' => 'AND',
                 'funcar_price' => array(
                     'key'     => 'sing_product_price',
                 ),
@@ -128,7 +127,6 @@ if (isset($_GET)) {
         }elseif($_GET["sorting"] === "DESC_price") {
 
             $query[] = array(
-                'relation' => 'AND',
                 'funcar_price' => array(
                     'key'     => 'sing_product_price',
                 ),
@@ -138,6 +136,7 @@ if (isset($_GET)) {
                 'order'   => 'DESC',
             ];
         }
+
     }
 }
 
@@ -145,12 +144,11 @@ $args = array(
     'category' => $category->term_id,
     'meta_query' => $query,
     'numberposts' => -1,
-    'post__not_in' => $sold_1week_posts_ids,
+    'post__not_in' => $sold_posts_ids_1week,
 );
-
 if(isset($_GET["sorting"]) && $_GET['sorting'] != '') {
     global $wp_query;
-    $args = array_merge(  $args, $sorting );
+    $args = array_merge( $wp_query->query_vars, $args, $sorting );
 }
 $posts = get_posts($args);
 //foreach($posts as $post) {
@@ -283,12 +281,15 @@ $translate = [
                 </div>
             </div>
             <?php
-//            $search = get_search_query();
-//            $obj = get_queried_object();
-//echo '<pre>';
-//            var_dump(get_query_var('post__not_in'));
-//echo '</pre>';
 
+            $queried_object = get_queried_object();
+//            echo '<pre>';
+//            print_r( $queried_object );
+//            echo '</pre>';
+            global $query_string;
+            echo '<pre>';
+            print_r( $query_string );
+            echo '</pre>';
 
             ?>
             <div class="catalog-content">
@@ -381,9 +382,9 @@ $translate = [
                         <div class="catalog__sort">
                             <form class="sorting_form">
                                 <select name="sorting" class="sorting_select">
-                                    <option value="none" selected disabled hidden>Сортування</option>
-                                    <option value="ASC_name" <?= ($_GET["sorting"] == "ASC_name") ? "selected" : ""; ?>>Назва від A до Z</option>
-                                    <option value="DESC_name" <?= ($_GET["sorting"] == "DESC_name") ? "selected" : ""; ?>>Назва від Z до A</option>
+                                    <option value="none" selected disabled hidden>Сортировка</option>
+                                    <option value="ASC_name" <?= ($_GET["sorting"] == "ASC_name") ? "selected" : ""; ?>>Назва від А до Я</option>
+                                    <option value="DESC_name" <?= ($_GET["sorting"] == "DESC_name") ? "selected" : ""; ?>>Назва від Я до А</option>
                                     <option value="ASC_price" <?= ($_GET["sorting"] == "ASC_price") ? "selected" : ""; ?>>Від найдешевші</option>
                                     <option value="DESC_price" <?= ($_GET["sorting"] == "DESC_price") ? "selected" : ""; ?>>Від найдорожчі</option>
                                 </select>
@@ -780,18 +781,7 @@ $translate = [
             const select = document.querySelector(".sorting_select");
 
             select.addEventListener("change", function () {
-                form.method = 'GET'
-                let value = select.value
-                // let strGET = window.location.search.replace( '?', '');
-                let newUrl = new URL(window.location.href)
-                if(newUrl.searchParams.has('sorting')) {
-                    newUrl.searchParams.set('sorting', value)
-                }else {
-                    newUrl.searchParams.append('sorting', value)
-                }
-                window.location.href = newUrl;
-                // form.action = newUrl
-                // form.submit();
+                form.submit();
             })
             /*$('#reset').on('click', function () {
                 $('#simple-filter').find('input').each(function () {

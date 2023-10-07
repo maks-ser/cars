@@ -76,9 +76,20 @@ $(window).scroll(function () {
 
 
 // Homepage slider
+window.addEventListener("load", (event) => {
+    //main page slider banner
+    const bannerSlider = new Swiper('.banner__slider', {
+        direction: 'horizontal',
+        speed: 600,
+        loop: true,
+        autoplay: 6500,
+        nextButton: '.banner__slider__button-next',
+        prevButton: '.banner__slider__button-prev',
 
+    })
+
+});
 const mySwiper = new Swiper('.home-swiper-container', {
-
     loop: true,
     spaceBetween: 20,
     centeredSlides: true,
@@ -137,18 +148,18 @@ new Swiper('.reviews-slider', {
 
 // Section banner slider functional
 
-new Swiper('.banner-slider', {
-    spaceBetween: 8,
-    speed: 500,
-    slidesPerView: 3,
-    loop: true,
-    centeredSlides: true,
-    autoplay: true,
-    navigation: {
-        nextEl: ".banner-slider__button-next",
-        prevEl: ".banner-slider__button-prev"
-    }
-});
+// new Swiper('.banner-slider', {
+//     spaceBetween: 8,
+//     speed: 500,
+//     slidesPerView: 3,
+//     loop: true,
+//     centeredSlides: true,
+//     autoplay: true,
+//     navigation: {
+//         nextEl: ".banner-slider__button-next",
+//         prevEl: ".banner-slider__button-prev"
+//     }
+// });
 
 // Section glasses slider functional
 
@@ -459,4 +470,5 @@ $(document).ready(function () {
         })
     }
 });
+
 
